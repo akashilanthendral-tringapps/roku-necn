@@ -7,12 +7,12 @@
         
     </interface>
     <children>
-
-        <Video
+        <Rectangle id="yellowBorder2" width="315" height="181.5625" color="#9900cc">
+            <Video
             id="secondVideo"
             height="171.5625"
             width="305"
-            translation="[5,-10]"
+            translation="[5,5]"
             enableUi="false"
         />
         <poster
@@ -26,8 +26,9 @@
         <Label 
             id="secondVideoDesc"
             height="100"
-            width="300"
-            translation="[0,210]"
+            width="290"
+            translation="[0,180]"
+            wrap="true"
         />
         <Rectangle translation="[225,136.5625]" width="80" height="35" color="#000000">
             <Label 
@@ -36,8 +37,6 @@
                 height="100"
             />
         </Rectangle>
-        
-        
-        
+        </Rectangle>
     </children>
 </component>

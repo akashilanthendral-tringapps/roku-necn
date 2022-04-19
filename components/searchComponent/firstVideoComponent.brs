@@ -1,6 +1,7 @@
 sub init()
     print "init of firstVideoComponent..............."
     m.firstVideo = m.top.findNode("firstVideo")
+    m.yellowBorder = m.top.findNode("yellowBorder")
     m.bgi = m.top.findNode("bgi")
     m.videoDurationDesc = m.top.findNode("videoDurationDesc")
     m.firstVideo.observeField("state", "handleState")
@@ -24,11 +25,11 @@ sub setContent()
    
     setFirstVideoSize()
     if m.secondTimeRenderingFirstVideo.isSecondTime = false
- 
-        setWatchNowText(true)
-        setWhiteRectVisibility(true)
-        setMuteIconVisibility(true)
-        setBackgroundImageVisible(false)
+        setWatchNowText(false)
+        setWhiteRectVisibility(false)
+        setMuteIconVisibility(false)
+        setBackgroundImageVisible(true)
+        setYellowBorder(false)
         setVideo()
     else
 
@@ -37,16 +38,26 @@ sub setContent()
             setWhiteRectVisibility(false)
             setMuteIconVisibility(false)
             setBackgroundImageVisible(true)
+            setYellowBorder(false)
             stopVideo()
         else
             setWatchNowText(true)
             setWhiteRectVisibility(true)
             setMuteIconVisibility(true)
             setBackgroundImageVisible(false)
+            setYellowBorder(true)
             playVideo()
         end if
     end if
     
+end sub
+
+sub setYellowBorder(visibility)
+    if visibility
+        m.yellowBorder.color = "#ffff00"
+    else
+        m.yellowBorder.color = "#9900cc"
+    end if
 end sub
 
 sub setWatchNowText(visibility)
@@ -81,9 +92,9 @@ function setVideo() as void
     videoContent.streamformat = m.firstVideoStreamFormat
     m.firstVideoDescNode.text = m.firstVideoDesc
     m.firstVideo.content = videoContent
-    m.firstVideo.control = m.firstVideoControl
+    m.firstVideo.control = "none"
     m.videoDurationDesc.text = m.firstVideoDuration
-    m.firstVideo.setFocus(true)
+    'm.firstVideo.setFocus(true)
    
 end function
 
@@ -103,7 +114,7 @@ sub setFirstVideoSize()
     print "sub handleincreaseFirstVideoSize()"
         m.firstVideo.width = "1000"
         m.firstVideo.height = "565.2"
-        m.firstVideo.translation = "[10,0]"
+        m.firstVideo.translation = "[0,0]"
 end sub
 
 function onKeyEvent(key as String, press as boolean) as boolean

@@ -1,5 +1,8 @@
 sub init()
 
+    print "init() of SEARCH component"
+    print "m.top: "m.top
+    m.top.observeField("visible", "onVisibilityChanged")
     m.firstVideoMUG = m.top.findNode("firstVideoMUG")
     
     ' m.firstVideoMUG.observeField("itemFocused", "onFirstVideoMUGFocused")
@@ -21,19 +24,21 @@ sub init()
     'For handling onSecondVideoMUGFocused()
     m.isFirstTimeInsideOnSecondVideoMUGFocused = true
     m.totalScreenWidth = 1920
-    print "totalScreenWidth: "totalScreenWidth
-    
     m.totalWidthOccByFirstMUG = m.firstVideoMUG.itemSize[0] + m.outerLayoutGroup.itemSpacings[0]
-    print "m.totalWidthOccByFirstMUG: "m.totalWidthOccByFirstMUG
-    print "m.outerLayoutGroup.translation[0]: "m.outerLayoutGroup.translation[0]
-    print ""
+    
     m.totalWidthOccBySecondMUG = m.totalScreenWidth - m.outerLayoutGroup.translation[0] - m.totalWidthOccByFirstMUG
-    print "m.totalWidthOccBySecondMUG: "m.totalWidthOccBySecondMUG
     m.minWidthOfSecondMUGWhereNoTranslation = m.totalWidthOccBySecondMUG
 
     m.sizeOfAnItem = m.secondVideoMUG.itemSpacing[0] + m.secondVideoMUG.itemSize[0]
     m.sizeOfNextVideoToBeVisible = 50
 
+end sub
+
+sub onVisibilityChanged()
+    if m.top.visible = true
+        renderFirstVideoComponent()
+        renderSecondVideoComponent()
+    end if
 end sub
 
 sub onFirstVideoMUGUnfocused()
@@ -88,7 +93,7 @@ end sub
 sub onSecondVideoMUGFocused()
 
     print "onSecondVideoMUGFocused()"
-    
+    print "m.secondVideoMUG.change: "m.secondVideoMUG.change
     m.focusedItemIndex = m.secondVideoMUG.itemFocused
     if m.isFirstTimeInsideOnSecondVideoMUGFocused
         m.isFirstTimeInsideOnSecondVideoMUGFocused = false
@@ -103,7 +108,7 @@ sub onSecondVideoMUGFocused()
     if m.secondVideoMUG.horizFocusDirection = "right"
         print "-------------------------"
         print "m.previousFocusedColumn: "m.previousFocusedColumn
-        m.spaceToMove = m.sizeOfAnItem * (focusedCol - m.previousFocusedColumn) 
+        m.spaceToMove = m.sizeOfAnItem * (focusedCol - m.previousFocusedColumn)
         m.top.toParentData = {
             "action": "moveScreen",
             "component": "searchComponent"
@@ -113,7 +118,7 @@ sub onSecondVideoMUGFocused()
     else if m.secondVideoMUG.horizFocusDirection = "left"
         print "-------------------------"
         print "m.previousFocusedColumn: "m.previousFocusedColumn
-        m.spaceToMove = m.sizeOfAnItem * (m.previousFocusedColumn - focusedCol) 
+        m.spaceToMove = m.sizeOfAnItem * (m.previousFocusedColumn - focusedCol)
         m.top.toParentData = {
             "action": "moveScreen",
             "component": "searchComponent"
@@ -263,13 +268,55 @@ function getFirstVideoDetails() as object
         "title" : "Test Video",
         "streamformat" : "hls",
         "control": "play",
-        "desc": "A streaming video!"
+        "desc": "As an open streaming platform, Roku welcomes publishers and developers to grow their audience with Roku. The Roku OS was purpose-built for streaming and runs across all Roku devices, including streaming players and Roku TVs."
     }
     return firstVideoDetails
 end function
 
 function getSecondVideoDetails() as object
     secondVideoDetails = [
+        {
+            "url": "https://roku.s.cpl.delvenetworks.com/media/59021fabe3b645968e382ac726cd6c7b/60b4a471ffb74809beb2f7d5a15b3193/roku_ep_111_segment_1_final-cc_mix_033015-a7ec8a288c4bcec001c118181c668de321108861.m3u8",
+            "title" : "Test Video 1",
+            "streamformat" : "hls",
+            "control": "none",
+            "desc": "A streaming video!"
+        },
+        {
+            "url": "https://roku.s.cpl.delvenetworks.com/media/59021fabe3b645968e382ac726cd6c7b/60b4a471ffb74809beb2f7d5a15b3193/roku_ep_111_segment_1_final-cc_mix_033015-a7ec8a288c4bcec001c118181c668de321108861.m3u8",
+            "title" : "Test Video 2",
+            "streamformat" : "hls",
+            "control": "none",
+            "desc": "A streaming video!"
+        },
+        {
+            "url": "https://roku.s.cpl.delvenetworks.com/media/59021fabe3b645968e382ac726cd6c7b/60b4a471ffb74809beb2f7d5a15b3193/roku_ep_111_segment_1_final-cc_mix_033015-a7ec8a288c4bcec001c118181c668de321108861.m3u8",
+            "title" : "Test Video 3",
+            "streamformat" : "hls",
+            "control": "none",
+            "desc": "A streaming video!"
+        },
+        {
+            "url": "https://roku.s.cpl.delvenetworks.com/media/59021fabe3b645968e382ac726cd6c7b/60b4a471ffb74809beb2f7d5a15b3193/roku_ep_111_segment_1_final-cc_mix_033015-a7ec8a288c4bcec001c118181c668de321108861.m3u8",
+            "title" : "Test Video 4",
+            "streamformat" : "hls",
+            "control": "none",
+            "desc": "A streaming video!"
+        },
+        {
+            "url": "https://roku.s.cpl.delvenetworks.com/media/59021fabe3b645968e382ac726cd6c7b/60b4a471ffb74809beb2f7d5a15b3193/roku_ep_111_segment_1_final-cc_mix_033015-a7ec8a288c4bcec001c118181c668de321108861.m3u8",
+            "title" : "Test Video 5",
+            "streamformat" : "hls",
+            "control": "none",
+            "desc": "A streaming video!"
+        },
+        {
+            "url": "https://roku.s.cpl.delvenetworks.com/media/59021fabe3b645968e382ac726cd6c7b/60b4a471ffb74809beb2f7d5a15b3193/roku_ep_111_segment_1_final-cc_mix_033015-a7ec8a288c4bcec001c118181c668de321108861.m3u8",
+            "title" : "Test Video 6",
+            "streamformat" : "hls",
+            "control": "none",
+            "desc": "A streaming video!"
+        },
         {
             "url": "https://roku.s.cpl.delvenetworks.com/media/59021fabe3b645968e382ac726cd6c7b/60b4a471ffb74809beb2f7d5a15b3193/roku_ep_111_segment_1_final-cc_mix_033015-a7ec8a288c4bcec001c118181c668de321108861.m3u8",
             "title" : "Test Video 1",
@@ -366,12 +413,20 @@ sub renderSecondVideoComponent()
     m.secondVideoMUG.content = m.secondVideoParentContent
 end sub
 
-sub onSetFocus()
+sub onSetFocus(event)
     
     print "inside: onSetFocus()"
-    renderFirstVideoComponent()
-    renderSecondVideoComponent()
-    m.firstVideoMUG.setFocus(true)
+    ' renderFirstVideoComponent()
+    ' renderSecondVideoComponent()
+    if event.getData()
+        print "if event.getData()"
+        m.firstVideoMUG.setFocus(true)
+        playFirstVideo()
+        print "playFirstVideo(): executed"
+    else
+        stopFirstVideo()
+    end if
+    
     print "m.firstVideoMUG.hasFocus(): "m.firstVideoMUG.hasFocus()
     'm.firstVideoChildContent.firstVideoControl = "play"
     'print "m.secondVideoMUG: "m.secondVideoMUG.hasFocus()
@@ -390,6 +445,7 @@ end sub
 ' end sub
 
 sub playFirstVideo()
+
     m.firstVideoChildContent.secondTimeRenderingFirstVideo = {
         "isSecondTime": true
         "control": "play"
@@ -453,6 +509,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
                 return false
             else if m.secondVideoMUG.hasFocus()
                 print "m.secondVideoMUG.hasFocus()"
+                m.previousFocusedColumn = 0
                 stopSecondVideo()
                 m.top.toParentData = {
                     "action": "moveScreen"

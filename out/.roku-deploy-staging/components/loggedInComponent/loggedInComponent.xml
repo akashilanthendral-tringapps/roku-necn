@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component name="loggedInComponent" extends="commonFields" initialFocus="playButton">
   <children>
+    <Rectangle id="outerRect" translation="[0,0]" width="1920" height="1080" color="#9900cc">
+
+    <Poster 
+      id="necnLogo"
+      width="150"
+      height="50"
+      uri="pkg:/images/separated/necnLogo.png"
+      translation="[50, 50]"
+    />
     
 
-    <Rectangle id="topRect" translation="[0,0]" width="1920" height="1080" >
+    <Rectangle id="topRect" translation="[0,100]" width="1920" height="1080" color="">
       <Animation 
 
         id="topRectAnimationLeftMovingScreen"
@@ -32,7 +41,7 @@
   
       <LayoutGroup id="layoutGroupId" layoutDirection="horiz" horizAlignment="left" translation="[-15,0]" itemSpacings="[200, 300]">
 
-        <Rectangle translation="[0,0]" width="3000" height="1080" color="#815dc1" >
+        <Rectangle translation="[0,0]" width="5000" height="1080" color="#9900cc" >
     
             
               <group id="markUpGridGroup" translation="[0,0]">
@@ -112,7 +121,8 @@
       </LayoutGroup>
     </Rectangle>
     
-
+  </Rectangle>
   </children>
+  
   <script type="text/brightscript" uri="loggedInComponent.brs" />
 </component>

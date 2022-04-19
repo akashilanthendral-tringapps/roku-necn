@@ -1,5 +1,4 @@
 sub init()
-    ' m.top.observeField("focusedChild", "setFocusToMyList")
 
     m.topRect = m.top.findNode("topRect")
     m.topRectTranslations = ["[0,0]", "[-300,0]", "[-600,0]", "[0,0]", "[-300,0]", "[-600,0]"]
@@ -21,11 +20,6 @@ sub init()
     m.leftMarkUpGridList.observeField("itemSelected", "onMarkUpGridSelected")
     m.isFirstTimeInsideOnMarkUpGridFocused = true
     
-    'm.leftMarkUpGridListAnimation = m.top.findNode("leftMarkUpGridListAnimation")
-    'm.leftMarkUpGridListAnimationWhenUnfocused = m.top.findNode("leftMarkUpGridListAnimationWhenUnfocused")
-    ' m.markUpGridBackgroundWhenFocused = m.top.findNode("markUpGridBackgroundWhenFocused")
-    ' m.markUpGridBackgroundWhenUnfocused = m.top.findNode("markUpGridBackgroundWhenUnfocused")
-    
     m.homeComponentId = m.top.findNode("homeComponentId")
     m.searchComponentId = m.top.findNode("searchComponentId")
     m.profileComponentId = m.top.findNode("profileComponentId")
@@ -33,13 +27,7 @@ sub init()
     
     m.componentsArray = [m.homeComponentId, m.searchComponentId, m.profileComponentId, m.timeGridComponentId]
     m.previousComp = m.homeComponentId
-    m.playButton.observeField("buttonSelected", "onPlayButtonSelected")
-
-    ' m.secondVideoMUG = m.searchComponentId.findNode("secondVideoMUG")
-    ' m.secondVideoMUG.observeField("itemFocused", "onSecondVideoMUGFocused")
-    ' m.secondVideoMUG.observeField("itemUnfocused", "onSecondVideoMUGUnfocused")
-    ' m.previouslyFocusedSecondVideoItemIndex = -1
- 
+    m.playButton.observeField("buttonSelected", "onPlayButtonSelected") 
 
     setLeftMarkUpGridItems()
     setHomeComponent()
@@ -47,31 +35,49 @@ end sub
 
 sub onMarkUpGridUnfocused()
     print "onMarkUpGridUnfocused()"
-    if m.leftMarkUpGridList.hasFocus()
-        m.unfocusedItemIndex = m.leftMarkUpGridList.itemUnfocused
-        m.unfocusedItem = m.leftMarkUpGridList.content.getChild(m.unfocusedItemIndex)
-        m.unfocusedItem.setIconVisible = false
-        m.unfocusedItem.setNameVisible = 0.5
+    setLabelIconAndLabelOpacity(false)
+    
+end sub
+
+sub setLabelIconAndLabelOpacity(boolValue as boolean)
+    print "setLabelIconAndLabelOpacity()"
+    if boolValue
+            m.focusedItemIndex = m.leftMarkUpGridList.itemFocused 
+            m.lastFocusedItemIndex = m.focusedItemIndex
+            m.focusedItem = m.leftMarkUpGridList.content.getChild(m.focusedItemIndex)
+            m.focusedItem.setIconVisible = true
+            m.focusedItem.setNameVisible = 1.0
+    else
+        if m.leftMarkUpGridList.hasFocus()
+            m.unfocusedItemIndex = m.leftMarkUpGridList.itemUnfocused
+            m.unfocusedItem = m.leftMarkUpGridList.content.getChild(m.unfocusedItemIndex)
+            m.unfocusedItem.setIconVisible = false
+            m.unfocusedItem.setNameVisible = 0.5
+        end if
     end if
 end sub
 
+function getUnfocusedItem()
+    unfocusedItemIndex = m.leftMarkUpGridList.itemUnfocused
+    unfocusedItem = m.leftMarkUpGridList.content.getChild(unfocusedItemIndex)
+    return unfocusedItem
+end function
+
+function getFocusedItem()
+    focusedItemIndex = m.leftMarkUpGridList.itemFocused
+    focusedItem = m.leftMarkUpGridList.content.getChild(focusedItemIndex)
+    return focusedItem
+end function
 sub onMarkUpGridFocused()
     print "onMarkUpGridFocused()"
-    if m.isFirstTimeInsideOnMarkUpGridFocused
-        print "if m.isFirstTimeInsideOnMarkUpGridFocused = true"
-        m.isFirstTimeInsideOnMarkUpGridFocused = false 
-        m.focusedItemIndex = m.leftMarkUpGridList.itemFocused 
-        m.lastFocusedItemIndex = m.focusedItemIndex
-        m.focusedItem = m.leftMarkUpGridList.content.getChild(m.focusedItemIndex)
-        m.focusedItem.setIconVisible = true
-        m.focusedItem.setNameVisible = 1.0
-    else
-        print "if m.isFirstTimeInsideOnMarkUpGridFocused = false"
-        m.focusedItemIndex = m.leftMarkUpGridList.itemFocused 
-        m.lastFocusedItemIndex = m.focusedItemIndex
-        m.focusedItem = m.leftMarkUpGridList.content.getChild(m.focusedItemIndex)
-        m.focusedItem.setIconVisible = true
-        m.focusedItem.setNameVisible = 1.0
+
+    setLabelIconAndLabelOpacity(true)
+
+    focusedItem = getFocusedItem()
+    if not focusedItem.name = "Sign out"
+        print "......................"
+        print "focusedItem.componentName: "focusedItem.componentName
+        renderComponent(focusedItem.componentName, "focused")
     end if
 end sub
 
@@ -86,63 +92,47 @@ sub onMarkUpGridSelected()
     selectedItemIndex = m.leftMarkUpGridList.itemSelected
     m.selectedItemOfLeftMarkUpGrid = selectedItemIndex
     print "selected item: "m.selectedItemOfLeftMarkUpGrid 
-    selectedItem = m.leftMarkUpGridList.content.getChild(selectedItemIndex)
+
+    selectedItem = getSelectedItem()
     selectedItem.setIconVisible = false 
     if selectedItem.name = "Sign out"
         onLogoutButtonSelected()
     else 
-        renderComponent()
+        renderComponent(selectedItem.componentName, "selected")
     end if
 end sub
 
-sub renderComponent()
 
+
+
+function getComponent(compName as String) as object
+    compToRender = m.top.findNode(compName)
+    return compToRender
+end function
+
+function getSelectedItem() as object
     selectedItemIndex = m.leftMarkUpGridList.itemSelected
     selectedItem = m.leftMarkUpGridList.content.getChild(selectedItemIndex)
-    compName = selectedItem.componentName
-    compToRender = m.top.findNode(compName)
+    return selectedItem
+end function
+
+
+sub renderComponent(compName as String, operationPerformed as String)
+    print "renderComponent()"
+    print "compName: "compName
+    compToRender = getComponent(compName)
+    print "compToRender: "compToRender
 
     compToRender.observeField("toParentData", "handleToParentData")
-
-    'm.leftMarkUpGridListAnimationWhenUnfocused.control = "start"
-    ' m.markUpGridBackgroundWhenUnfocused.control = "start"
-
     m.previousComp.setFocus = false
     m.previousComp.visible = false
     m.previousComp = compToRender
-    compToRender.setFocus = true
     compToRender.visible = true
-    ' i = 0
-    ' while i < m.componentsArray.Count()
-    '     print "Inside while"
-    '     if i <> selectedItem
-            
-    '         m.componentsArray[i].setFocus = false
-    '         m.componentsArray[i].visible = false
-    '     else
-    '         print "i = selectedItem: "i
-    '         print "setfocus triggered"
-    '         print "item selected: "m.leftMarkUpGridList.content.getChild(selectedItem)
-    '         m.leftMarkUpGridListAnimationWhenUnfocused.control = "start"
-           ' m.markUpGridBackgroundWhenUnfocused.control = "start"
-    '         m.componentsArray[i].visible = true
-    '         m.componentsArray[i].setFocus = true
-            
-    '         m.previousComp = m.componentsArray[i]
-    '     end if
-    '     i = i + 1
-    ' end while
+    if operationPerformed = "selected"
+        print "if operationPerformed = selected"
+        compToRender.setFocus = true
+    end if
     
-    ' if selectedItem = 0
-        
-    ' else if selectedItem = 3
-    '     comp = m.componentsArray[0]
-    '     m.previousComp = comp 
-    '     m.playButton.setFocus(false)
-    '     comp.visible = true
-    '     comp.setFocus = true
-    ' end if
-
 end sub
 
 sub renderLiveComponent()
@@ -182,7 +172,7 @@ sub setLeftMarkUpGridItems()
             "name": "Sign out",
             "iconUri": "pkg:/images/separated/sideBarIcon.png",
             ' "iconUri": "pkg:/images/separated/signoutIcon.png",
-            "componentName": ""
+            "componentName": "signOutComponent"
         }
     ]
 
@@ -206,16 +196,6 @@ sub setLeftMarkUpGridItems()
     m.leftMarkUpGridList.content = parentContent
 end sub
 
-' sub setFocusToMyList()
-
-'     if m.top.hasFocus()
-'         m.leftMarkUpGridList.setFocus(true)
-'         m.leftMarkUpGridListAnimation.control = "start"
-        ' m.markUpGridBackgroundWhenFocused.control = "start"
-'     end if
-
-' end sub
-
 sub onLogoutButtonSelected()
     m.top.getScene().deleteBackStackArray = true
     m.top.getScene().logOut = true
@@ -236,15 +216,6 @@ sub handleFromChildData()
         m.playButton.setFocus(true)
     else if m.selectedItemOfLeftMarkUpGrid = 1
         m.searchComponentId.afterOnFirstVideoMUGSelected = true
-        ' if m.previouslyFocusedSecondVideoItemIndex = -1
-        '     m.searchComponentId.afterOnFirstVideoMUGSelected = "true"
-        ' else
-        '     m.secondVideoMUG.setFocus(true)
-        '     m.focusedItem.secondTimeRenderingSecondVideo = {
-        '         "isSecondTime": true
-        '         "control": "play"
-        '     }
-        ' end if
     else 
         m.leftMarkUpGridList.setFocus(true)
     end if
@@ -257,8 +228,6 @@ function onKeyEvent(key as string, press as boolean) as boolean
             print "Right key pressed"
             if m.leftMarkUpGridList.hasFocus()
                 print "m.leftMarkUpGridList.hasFocus(): "m.leftMarkUpGridList.hasFocus()
-                'm.leftMarkUpGridListAnimationWhenUnfocused.control = "start"
-                ' m.markUpGridBackgroundWhenUnfocused.control = "start"
                 itemFoc = m.leftMarkUpGridList.content.getChild(m.leftMarkUpGridList.itemFocused)
                 itemFoc.setIconVisible = false
                 m.previousComp.setFocus = true
@@ -266,43 +235,23 @@ function onKeyEvent(key as string, press as boolean) as boolean
             end if
         else if key = "left"
             print "left pressed"
-            ' if m.secondVideoMUG.hasFocus()
-            '     ' stopSecondVideo()
-            '     m.searchComponentId.playFirstVideo = true
-            '     return true
              if m.playButton.hasFocus()
                 print "m.playButton.hasFocus()"
-                'm.leftMarkUpGridListAnimation.control = "start"
-                ' m.markUpGridBackgroundWhenFocused.control = "start"
                 m.playButton.setFocus(false)
                 m.leftMarkUpGridList.setFocus(true)
                 return true
             else if NOT m.leftMarkUpGridList.hasFocus() 
-                print "NOT m.leftMarkUpGridList.hasFocus()"
-                'm.leftMarkUpGridListAnimation.control = "start"
-                ' m.markUpGridBackgroundWhenFocused.control = "start"
                 m.leftMarkUpGridList.setFocus(true)
                 return true
             else
                 print "else part handled"
-                ' m.leftMarkUpGridListAnimation.control = "start"
-                ' m.markUpGridBackgroundWhenFocused.control = "start"
                 m.leftMarkUpGridList.setFocus(true)
             end if
         
         else if key = "back"
-            ' m.leftMarkUpGridList.setFocus(true)
-            ' if m.secondVideoMUG.hasFocus()
-            '     ' stopSecondVideo()
-            '     m.topRect.translation = "[0,0]"
-            '     m.leftMarkUpGridListAnimation.control = "start"
-            '     m.leftMarkUpGridList.setFocus(true)
-            '     return true
             if m.leftMarkUpGridList.hasFocus()
                 return true
             end if
-            'm.leftMarkUpGridListAnimation.control = "start"
-            ' m.markUpGridBackgroundWhenFocused.control = "start"
             m.leftMarkUpGridList.setFocus(true)
             return true
         else if key = "ok"
@@ -321,38 +270,11 @@ sub handleToParentData(event)
         m.top.getScene().compToPush = dataFromChild.componentName
     else if dataFromChild.action = "moveScreen"
         if dataFromChild.component = "searchComponent"
-            secondVideoMUGWidth = dataFromChild.spaceToMove
             moveScreen(dataFromChild.direction, dataFromChild.spaceToMove)
         end if
         
     end if
 end sub
-
-' sub onSecondVideoMUGFocused()
-'     print "Inside onSecondVideoMUGFocused()"
-'     print "onSecondVideoMUGFocused()"
-'     m.focusedItemIndex = m.secondVideoMUG.itemFocused
-'     if m.previouslyFocusedSecondVideoItemIndex = -1
-'         m.previouslyFocusedSecondVideoItemIndex = 0
-'     end if
-'     print "m.focusedItemIndex: "m.focusedItemIndex
-
-'     if m.focusedItemIndex <> 0 or m.focusedItemIndex <> 3
-'         print "......................"
-'         print "Inside IF"
-'         print "m.previouslyFocusedSecondVideoItemIndex : "m.previouslyFocusedSecondVideoItemIndex 
-'         print "m.focusedItemIndex: "m.focusedItemIndex
-
-'         moveScreen()        
-'     end if
-
-'     m.focusedItem = m.secondVideoMUG.content.getChild(m.focusedItemIndex)
-'     m.lastFocusedItemOfSecondVideo = m.focusedItem
-'     m.focusedItem.secondTimeRenderingSecondVideo = {
-'         "isSecondTime": true
-'         "control": "play"
-'     }
-' end sub
 
 sub moveScreen(direction, spaceToMove)
     print "moveScreen()"
@@ -361,55 +283,17 @@ sub moveScreen(direction, spaceToMove)
     xCoordinate = m.topRect.translation[0]
     if direction = "right"
         
-        m.topRectInterpRightMovingScreen.keyValue = [[xCoordinate, 0], [xCoordinate-spaceToMove, 0]]
+        m.topRectInterpRightMovingScreen.keyValue = [[xCoordinate, 100], [xCoordinate-spaceToMove, 100]]
         m.topRectAnimationRightMovingScreen.control = "start"
-
-        ' m.topRectInterpRightMovingScreen.keyValue = [[xCoordinate, 0], [xCoordinate-300, 0]]
-        ' m.topRectAnimationRightMovingScreen.control = "start"
-
-        ' xCoordinate = xCoordinate - 300
-        ' m.topRect.translation = [xCoordinate, 0]
-        ' print "m.topRect.translation: "m.topRect.translation
-        ' xCoordinate = m.topRect.translation[0]
         
     else if direction="left"
         
-        m.topRectInterpLeftMovingScreen.keyValue = [[xCoordinate, 0], [xCoordinate+spaceToMove, 0]]
+        m.topRectInterpLeftMovingScreen.keyValue = [[xCoordinate, 100], [xCoordinate+spaceToMove, 100]]
         m.topRectAnimationLeftMovingScreen.control = "start"
-        ' xCoordinate = m.topRect.translation[0]
-        ' xCoordinate = xCoordinate + 300
-        ' m.topRect.translation = [xCoordinate, 0]
-        ' print "m.topRect.translation: "m.topRect.translation
+
     else
-        m.topRectInterpLeftMovingScreen.keyValue = [[xCoordinate, 0], [0, 0]]
+        m.topRectInterpLeftMovingScreen.keyValue = [[xCoordinate, 100], [0, 100]]
         m.topRectAnimationLeftMovingScreen.control = "start"
-        'm.topRect.translation = [0,0]
     end if
-    ' m.topRect.translation= m.topRectTranslations[m.focusedItemIndex]
-    ' m.topRect.translation[0] =  m.topRect.translation[0] - 100
-    ' if leftOrRight = "right"
-    '     print "leftOrRight = right"
-    '     print "m.topRect.translation[0]: "m.topRect.translation[0]
-    '     m.topRect.translation= m.topRectTranslations[m.focusedItemIndex]
-    '     print "m.topRect.translation[0]: "m.topRect.translation[0]
-    ' else
-    '     print "leftOrRight = left"
-    '     print "m.topRect.translation[0]: "m.topRect.translation[0]
-    '     m.topRect.translation[0] = m.topRect.translation[0] + 100
-    '     print "m.topRect.translation: "m.topRect.translation
-    ' end if
     
 end sub
-
-' sub onSecondVideoMUGUnfocused()
-'     m.lastFocusedItemOfSecondVideo.secondTimeRenderingSecondVideo = {
-'         "isSecondTime" : true,
-'         "control": "stop"
-'     }
-' end sub
-' sub stopSecondVideo()
-'     m.lastFocusedItemOfSecondVideo.secondTimeRenderingSecondVideo = {
-'         "isSecondTime": true
-'         "control": "stop"
-'     }
-' end sub

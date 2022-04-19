@@ -4,9 +4,9 @@
     </interface>
     <children>
         <Rectangle width="1920" height="1080" color="#000000">
-            <Group id="keyboardComponentGroup" translation="[0,100]">
+            <Group id="keyboardComponentGroup" translation="[100,100]">
                 <keyboard id="keyboard1" translation="[150,0]"/>
-                <button id = "backButton" text="Back" focusedIconUri=" " iconUri=" "  maxWidth="100" translation="[450,400]" />
+                <button id = "backButton" text="Back" focusedIconUri=" " iconUri=" "  maxWidth="100" translation="[560,600]" />
             </Group>
         </Rectangle>
     </children>

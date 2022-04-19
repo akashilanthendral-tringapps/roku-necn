@@ -1,6 +1,7 @@
 sub init()
 
     m.secondVideo = m.top.findNode("secondVideo")
+    m.yellowBorder2 = m.top.findNode("yellowBorder2")
     m.bgi = m.top.findNode("bgi")
     m.videoDurationDesc = m.top.findNode("videoDurationDesc")
     m.secondVideoDescNode = m.top.findNode("secondVideoDesc")
@@ -25,6 +26,7 @@ sub setContent2()
     if m.secondTimeRenderingSecondVideo.isSecondTime = false
         ' print "m.secondTimeRenderingSecondVideo.isSecondTime = false"
         setBackgroundImageVisible(true)
+        setYellowBorder2(false)
         setVideo2()
     else
         ' print "m.secondTimeRenderingSecondVideo.isSecondTime = true"
@@ -32,12 +34,14 @@ sub setContent2()
             ' print "stop:"
             ' print "m.secondVideo.state: "m.secondVideo.state
             setBackgroundImageVisible(true)
+            setYellowBorder2(false)
             m.secondVideo.control = "stop"
             ' print "m.secondVideo: "m.secondVideo
         else
             ' print "play:"
             ' print "m.secondVideo.state: "m.secondVideo.state
             setBackgroundImageVisible(false)
+            setYellowBorder2(true)
             m.secondVideo.control = "play"
             ' print "m.secondVideo: "m.secondVideo
         end if
@@ -46,6 +50,14 @@ sub setContent2()
 
     ' setVideoSize2()
     ' setVideo2()
+end sub
+
+sub setYellowBorder2(visibility)
+    if visibility
+        m.yellowBorder2.color = "#ffff00"
+    else
+        m.yellowBorder2.color = "#9900cc"
+    end if
 end sub
 
 sub setBackgroundImageVisible(bool as boolean)
